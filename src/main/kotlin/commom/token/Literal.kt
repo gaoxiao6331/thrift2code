@@ -1,4 +1,4 @@
-package gaoxiao6331.commom
+package gaoxiao6331.commom.token
 
 enum class Literal {
     CommentLine,
