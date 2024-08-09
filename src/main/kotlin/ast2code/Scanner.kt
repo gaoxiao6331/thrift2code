@@ -1,5 +1,7 @@
 package gaoxiao6331.ast2code
 
+import gaoxiao6331.commom.exception.InternalException
+
 class Scanner {
 
     private var line = 1
@@ -18,8 +20,24 @@ class Scanner {
         return this.idx >= this.source.length
     }
 
-   fun scan(source: String) {
+    private fun advance(): Char {
+        val curChar = source[idx]
+        idx++
+        return curChar
+    }
 
+    private fun previous(n: Int = 1): Char {
+        val prevIdx = idx - n
+        if (prevIdx >= 0) {
+            return source[prevIdx]
+        }
+        throw InternalException("current index is ${idx}, cannot get previous $n")
+    }
+
+   fun scan(source: String) {
+       while (!isEnd()) {
+
+       }
    }
 
 }
