@@ -1,6 +1,7 @@
 package gaoxiao6331.ast2code
 
 import gaoxiao6331.commom.exception.InternalException
+import gaoxiao6331.commom.token.Mark
 import gaoxiao6331.commom.token.Token
 
 class Scanner {
@@ -9,11 +10,13 @@ class Scanner {
     private var pos = Position(1,1,0)
     private var source = ""
     private var startPos = Position(1,1,0)
+    private var tokenList = mutableListOf<TokenData>()
 
     private fun reset(source: String) {
         this.pos = Position(1, 1,0)
         this.startPos = Position(1, 1, 0)
         this.source = source
+        this.tokenList = mutableListOf()
     }
 
     private fun saveStartPos() {
@@ -49,7 +52,7 @@ class Scanner {
         this.pos.column = 1
     }
 
-    private fun buildToken(type: Token): TokenData {
+    private fun buildToken(type: Token) {
         val start = this.startPos.index
         val end = this.pos.index
         val value = this.source.substring(start, end)
@@ -57,7 +60,20 @@ class Scanner {
             this.startPos.copy(),
             this.pos.copy()
         )
-        return TokenData(type, value, location)
+        val token = TokenData(type, value, location)
+        this.tokenList.add(token)
+    }
+
+    private fun scanString() {
+
+    }
+
+    private fun scanComment() {
+
+    }
+
+    private fun scanMinus() {
+
     }
 
    fun scan(source: String) {
@@ -68,6 +84,10 @@ class Scanner {
                in WhiteSpace -> continue
                NextLine -> nextLine()
                And -> TODO("& indicating pointer is supported by thrift, but there is no description in the document, deal wit it later")
+               in SingleCharMarkTokenList -> buildToken(SingleCharMarkTokenMap[c]!!)
+               in StringStart -> scanString()
+               in Comment -> scanComment()
+               Minus -> scanMinus()
 
            }
            advance()
