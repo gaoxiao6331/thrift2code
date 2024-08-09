@@ -1,6 +1,6 @@
 package gaoxiao6331.commom.token
 
-enum class Keyword {
+enum class Keyword: Token {
     NamespaceKeyword,
     IncludeKeyword,
     CppIncludeKeyword,

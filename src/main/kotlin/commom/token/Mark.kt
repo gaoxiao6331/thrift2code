@@ -1,6 +1,6 @@
 package gaoxiao6331.commom.token
 
-enum class Mark {
+enum class Mark: Token {
     LeftParenthesisToken,
     RightParenParenthesisToken,
     LeftBraceToken,

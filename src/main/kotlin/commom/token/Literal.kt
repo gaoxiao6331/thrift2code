@@ -1,6 +1,6 @@
 package gaoxiao6331.commom.token
 
-enum class Literal {
+enum class Literal: Token {
     CommentLine,
     CommentBlock,
     StringLiteral,
