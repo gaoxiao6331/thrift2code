@@ -24,6 +24,10 @@ val KeyWordTokenMap = Keyword.entries.fold(mutableMapOf<String, Mark>()) { map, 
 
 val StringStart = listOf('\'', '"')
 
-val Comment = listOf('#', '/')
+
+val Hash = '#'
+val Slash = '/'
+val Star = '*'
+val Comment = listOf(Hash, Slash)
 
 val Minus = '-'

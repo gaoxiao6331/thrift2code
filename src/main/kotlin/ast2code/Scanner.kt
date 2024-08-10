@@ -2,13 +2,14 @@ package gaoxiao6331.ast2code
 
 import gaoxiao6331.commom.error.GrammarException
 import gaoxiao6331.commom.exception.InternalException
+import gaoxiao6331.commom.token.Literal
 import gaoxiao6331.commom.token.Mark
 import gaoxiao6331.commom.token.Token
 
 class Scanner {
 
     // this value should not be used due to reset()
-    private var pos = Position(1,1,-1)
+    private var pos = Position(1,1,-1) // index is the last char consumed
     private var source = ""
     private var startPos = pos.copy()
     private var tokenList = mutableListOf<TokenData>()
@@ -84,18 +85,38 @@ class Scanner {
     }
 
     private fun extractAndAddSingleLineComment() {
+        saveStartPos() // don't need # or //
+        var comment = ""
+        var c = next()
+        while (c != NextLine) {
+            comment += c
+            advance()
+            c = next()
+        }
+        addToken(Literal.CommentLine)
+    }
 
+    private fun extractAndAddMultiLinesComment() {
+        saveStartPos() // don't need # or //
+        var comment = ""
+        var c = next()
+        while (c != NextLine) {
+            comment += c
+            advance()
+            c = next()
+        }
+        addToken(Literal.CommentLine)
     }
 
     private fun scanComment() {
         when (val start = nextAndAdvance()) {
-            '#' -> {
+            Hash -> {
                 extractAndAddSingleLineComment()
             }
-            '/' -> {
+            Slash -> {
                 when (val secondChar = nextAndAdvance()) {
-                    '/' -> extractAndAddSingleLineComment()
-                    '*' -> TODO()
+                    Slash -> extractAndAddSingleLineComment()
+                    Star -> TODO()
                     else -> throw GrammarException(source, "unknown grammar", pos)
                 }
             }
