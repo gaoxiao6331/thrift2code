@@ -68,10 +68,7 @@ class Scanner {
         advance()
     }
 
-    private fun addToken(type: Token) {
-        val start = this.startPos.index
-        val end = this.pos.index
-        val value = this.source.substring(start, end)
+    private fun addToken(type: Token, value: String) {
         val location = Location(
             this.startPos.copy(),
             this.pos.copy()
@@ -81,24 +78,50 @@ class Scanner {
     }
 
     private fun scanString() {
-
+        val stringStart = nextAndAdvance()
+        var hasStringEnd = false
+        var value = ""
+        while (!isEnd()) {
+            when(val c = nextAndAdvance()) {
+                Slash -> {
+                    val n = nextAndAdvance()
+                    value += n
+                }
+                NextLine -> {
+                    value += c
+                    nextLine()
+                }
+                stringStart -> {
+                    hasStringEnd = true
+                    break
+                }
+                else -> {
+                    value += c
+                }
+            }
+        }
+        if (!hasStringEnd) {
+            throw GrammarException(source, "string without close $stringStart", pos)
+        }
+        addToken(Literal.StringLiteral, value)
     }
 
     private fun extractAndAddSingleLineComment() {
         saveStartPos() // don't need # or //
         var comment = ""
         var c = next()
-        while (c != NextLine) {
+        while (!isEnd() && c != NextLine) {
             comment += c
             advance()
             c = next()
         }
-        addToken(Literal.CommentLine)
+        addToken(Literal.CommentLine, comment)
     }
 
     private fun extractAndAddMultiLinesComment() {
         saveStartPos() // don't need /*
         var comment = ""
+        var hasCloseSymbols = false
         while (!isEnd()) {
             when(val c = nextAndAdvance()) {
                 NextLine -> {
@@ -108,6 +131,7 @@ class Scanner {
                 Star -> {
                     if (next(2) == Slash) {
                         advance()
+                        hasCloseSymbols = true
                         break
                     }
                 }
@@ -116,7 +140,10 @@ class Scanner {
                 }
             }
         }
-        addToken(Literal.CommentLine)
+        if (!hasCloseSymbols) {
+            throw GrammarException(source, "comment without close symbol", pos)
+        }
+        addToken(Literal.CommentLine, comment)
     }
 
     private fun scanComment() {
@@ -148,7 +175,7 @@ class Scanner {
                NextLine -> nextLine()
                And -> TODO("& indicating pointer is supported by thrift, but there is no description in the document, deal wit it later")
                in SingleCharMarkTokenList -> {
-                   addToken(SingleCharMarkTokenMap[c]!!)
+                   addToken(SingleCharMarkTokenMap[c]!!, "$c")
                    advance()
                }
                in StringStart -> scanString()
