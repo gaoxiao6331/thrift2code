@@ -97,13 +97,24 @@ class Scanner {
     }
 
     private fun extractAndAddMultiLinesComment() {
-        saveStartPos() // don't need # or //
+        saveStartPos() // don't need /*
         var comment = ""
-        var c = next()
-        while (c != NextLine) {
-            comment += c
-            advance()
-            c = next()
+        while (!isEnd()) {
+            when(val c = nextAndAdvance()) {
+                NextLine -> {
+                    nextLine()
+                    comment += c
+                }
+                Star -> {
+                    if (next(2) == Slash) {
+                        advance()
+                        break
+                    }
+                }
+                else -> {
+                    comment += c
+                }
+            }
         }
         addToken(Literal.CommentLine)
     }
@@ -116,7 +127,7 @@ class Scanner {
             Slash -> {
                 when (val secondChar = nextAndAdvance()) {
                     Slash -> extractAndAddSingleLineComment()
-                    Star -> TODO()
+                    Star -> extractAndAddMultiLinesComment()
                     else -> throw GrammarException(source, "unknown grammar", pos)
                 }
             }
