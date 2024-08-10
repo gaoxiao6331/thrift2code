@@ -2,9 +2,7 @@ package gaoxiao6331.ast2code
 
 import gaoxiao6331.commom.error.GrammarException
 import gaoxiao6331.commom.exception.InternalException
-import gaoxiao6331.commom.token.Literal
-import gaoxiao6331.commom.token.Mark
-import gaoxiao6331.commom.token.Token
+import gaoxiao6331.commom.token.*
 
 class Scanner {
 
@@ -162,8 +160,51 @@ class Scanner {
         }
     }
 
-    private fun scanMinus() {
+    private fun scanNumber() {
+        /*
+            0x
+            0X
+            123
+            12.3
+            1.0e3
+            1.0e3.111
+         */
 
+    }
+
+    private fun scanMinus() {
+        advance()
+        when(val c = next()) {
+            in Digit -> {
+                scanNumber()
+            }
+            else -> {
+                TODO("check whether there is other situations or not")
+            }
+        }
+    }
+
+    // not for first char of identifier
+    private fun isValidIdentifierChar(c: Char): Boolean {
+        // TODO check non english letter and $
+        return c in Letter + Underscore + Digit
+    }
+
+    private fun scanIdentifierOrKeyword() {
+        var value = ""
+        while (!isEnd()) {
+            val c = nextAndAdvance()
+            if (c in WhiteSpace) break
+            if (!isValidIdentifierChar(c)) throw GrammarException(source, "should be letter or underscore", pos)
+            value += c
+
+        }
+        if (value in KeywordTokenList) {
+            val type = KeyWordTokenMap[value]!!
+            addToken(type, value)
+        } else {
+            addToken(Other.Identifier, value)
+        }
     }
 
    fun scan(source: String) {
@@ -174,13 +215,16 @@ class Scanner {
                in WhiteSpace -> advance()
                NextLine -> nextLine()
                And -> TODO("& indicating pointer is supported by thrift, but there is no description in the document, deal wit it later")
-               in SingleCharMarkTokenList -> {
+               Minus -> scanMinus()
+               in SingleCharMarkTokenList -> { // contain minus, so must behind minus
                    addToken(SingleCharMarkTokenMap[c]!!, "$c")
                    advance()
                }
                in StringStart -> scanString()
                in Comment -> scanComment()
-               Minus -> scanMinus()
+               in Digit -> scanNumber()
+               Underscore -> scanIdentifierOrKeyword()
+               in Letter -> scanIdentifierOrKeyword()
                else -> throw GrammarException(source, "unknown grammar", pos)
            }
        }

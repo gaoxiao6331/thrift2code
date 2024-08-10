@@ -1,7 +1,9 @@
 package gaoxiao6331.ast2code
 
 import gaoxiao6331.commom.token.Keyword
+import gaoxiao6331.commom.token.Literal
 import gaoxiao6331.commom.token.Mark
+import org.intellij.lang.annotations.Identifier
 
 val WhiteSpace = listOf(' ', '\r', '\t')
 
@@ -16,8 +18,8 @@ val SingleCharMarkTokenMap = Mark.entries.fold(mutableMapOf<Char, Mark>()) { map
 }
 
 val KeywordTokenList = Keyword.entries.map { it.keywordName }
-val KeyWordTokenMap = Keyword.entries.fold(mutableMapOf<String, Mark>()) { map, keyword ->
-    map[keyword.keywordName] = Mark.valueOf(keyword.name)
+val KeyWordTokenMap = Keyword.entries.fold(mutableMapOf<String, Keyword>()) { map, keyword ->
+    map[keyword.keywordName] = Keyword.valueOf(keyword.name)
     return@fold map
 }
 
@@ -31,3 +33,8 @@ val Star = '*'
 val Comment = listOf(Hash, Slash)
 
 val Minus = '-'
+
+val Digit = '0' .. '9'
+
+val Letter = ('a'..'z') + ('A'..'Z')
+val Underscore = '_'
