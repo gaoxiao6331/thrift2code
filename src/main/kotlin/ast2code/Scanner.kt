@@ -1,5 +1,6 @@
 package gaoxiao6331.ast2code
 
+import gaoxiao6331.commom.error.GrammarException
 import gaoxiao6331.commom.exception.InternalException
 import gaoxiao6331.commom.token.Mark
 import gaoxiao6331.commom.token.Token
@@ -7,14 +8,14 @@ import gaoxiao6331.commom.token.Token
 class Scanner {
 
     // this value should not be used due to reset()
-    private var pos = Position(1,1,0)
+    private var pos = Position(1,1,-1)
     private var source = ""
-    private var startPos = Position(1,1,0)
+    private var startPos = pos.copy()
     private var tokenList = mutableListOf<TokenData>()
 
     private fun reset(source: String) {
-        this.pos = Position(1, 1,0)
-        this.startPos = Position(1, 1, 0)
+        this.pos = Position(1, 1,-1)
+        this.startPos = this.pos.copy()
         this.source = source
         this.tokenList = mutableListOf()
     }
@@ -47,12 +48,26 @@ class Scanner {
         throw InternalException("current index is ${this.pos.index}, total length is ${this.source.length}, cannot get next ${n}th char")
     }
 
+    private fun current(): Char {
+        if (!isEnd()) {
+            return previous(0)
+        }
+        throw InternalException("source code has been scanned")
+    }
+
+    private fun nextAndAdvance(n: Int = 1): Char {
+        val c = next(n)
+        advance(n)
+        return c
+    }
+
     private fun nextLine() {
         this.pos.line ++
         this.pos.column = 1
+        advance()
     }
 
-    private fun buildToken(type: Token) {
+    private fun addToken(type: Token) {
         val start = this.startPos.index
         val end = this.pos.index
         val value = this.source.substring(start, end)
@@ -68,8 +83,24 @@ class Scanner {
 
     }
 
-    private fun scanComment() {
+    private fun extractAndAddSingleLineComment() {
 
+    }
+
+    private fun scanComment() {
+        when (val start = nextAndAdvance()) {
+            '#' -> {
+                extractAndAddSingleLineComment()
+            }
+            '/' -> {
+                when (val secondChar = nextAndAdvance()) {
+                    '/' -> extractAndAddSingleLineComment()
+                    '*' -> TODO()
+                    else -> throw GrammarException(source, "unknown grammar", pos)
+                }
+            }
+            else -> throw InternalException("not comment")
+        }
     }
 
     private fun scanMinus() {
@@ -81,16 +112,18 @@ class Scanner {
        while (!isEnd()) {
            saveStartPos()
            when(val c = next()) {
-               in WhiteSpace -> continue
+               in WhiteSpace -> advance()
                NextLine -> nextLine()
                And -> TODO("& indicating pointer is supported by thrift, but there is no description in the document, deal wit it later")
-               in SingleCharMarkTokenList -> buildToken(SingleCharMarkTokenMap[c]!!)
+               in SingleCharMarkTokenList -> {
+                   addToken(SingleCharMarkTokenMap[c]!!)
+                   advance()
+               }
                in StringStart -> scanString()
                in Comment -> scanComment()
                Minus -> scanMinus()
-
+               else -> throw GrammarException(source, "unknown grammar", pos)
            }
-           advance()
        }
    }
 
