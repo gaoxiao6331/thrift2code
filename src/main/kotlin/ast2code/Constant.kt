@@ -35,6 +35,11 @@ val Comment = listOf(Hash, Slash)
 val Minus = '-'
 
 val Digit = '0' .. '9'
+val HexDigit = Digit + ('A'..'F') + ('a'..'f')
+val X = listOf('x', 'X')
+val E = listOf('e','E')
+
+val Dot = '.'
 
 val Letter = ('a'..'z') + ('A'..'Z')
 val Underscore = '_'

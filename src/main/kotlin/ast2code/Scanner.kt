@@ -160,6 +160,10 @@ class Scanner {
         }
     }
 
+    private fun extractHexDigit() {
+
+    }
+
     private fun scanNumber() {
         /*
             0x
@@ -169,7 +173,36 @@ class Scanner {
             1.0e3
             1.0e3.111
          */
-
+        var value = ""
+        var firstDot = false
+        var firstE = false
+        var canBeNeg = true
+        var cenBePos = true
+        while (!isEnd()) {
+            when(val c = nextAndAdvance()) {
+                in X -> {
+                    if (value == "0") {
+                        extractHexDigit()
+                        break
+                    }
+                    throw GrammarException(source, "$c should be used as hex number", pos)
+                }
+                Dot -> {
+                    if (firstDot) {
+                        throw GrammarException(source, "not a valid number", pos)
+                    }
+                    firstDot = true
+                    value += c
+                }
+                in E -> {
+                    if (firstE) {
+                        throw GrammarException(source, "not a valid number", pos)
+                    }
+                    firstDot = true
+                    value += c
+                }
+            }
+        }
     }
 
     private fun scanMinus() {
@@ -187,7 +220,8 @@ class Scanner {
     // not for first char of identifier
     private fun isValidIdentifierChar(c: Char): Boolean {
         // TODO check non english letter and $
-        return c in Letter + Underscore + Digit
+        // dot is for namespace xxx.yyy.zzz
+        return c in Letter + Underscore + Digit + Dot
     }
 
     private fun scanIdentifierOrKeyword() {
