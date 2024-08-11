@@ -33,13 +33,18 @@ val Star = '*'
 val Comment = listOf(Hash, Slash)
 
 val Minus = '-'
+val Plus = '+'
+val PosOrNegSign = listOf(Minus, Plus)
 
 val Digit = '0' .. '9'
 val HexDigit = Digit + ('A'..'F') + ('a'..'f')
 val X = listOf('x', 'X')
 val E = listOf('e','E')
+val HexStart = "0X"
 
 val Dot = '.'
 
 val Letter = ('a'..'z') + ('A'..'Z')
 val Underscore = '_'
+
+val BoolLiteral = listOf("true", "false")

@@ -141,7 +141,7 @@ class Scanner {
         if (!hasCloseSymbols) {
             throw GrammarException(source, "comment without close symbol", pos)
         }
-        addToken(Literal.CommentLine, comment)
+        addToken(Literal.CommentBlock, comment)
     }
 
     private fun scanComment() {
@@ -160,59 +160,104 @@ class Scanner {
         }
     }
 
-    private fun extractHexDigit() {
-
+    private fun extractHexDigit(): String {
+        var value = ""
+        var c = next()
+        while (!isEnd() && c in HexDigit) {
+            value += c
+            advance()
+            c = next()
+        }
+        if (value.length == 0) throw GrammarException(source, "not a valid hex number", pos)
+        return value
     }
 
-    private fun scanNumber() {
+    private fun extractNumberNotStartWithSign(): String {
         /*
-            0x
-            0X
-            123
-            12.3
-            1.0e3
-            1.0e3.111
+            0x | 0X -> hex
+            123 -> int
+            12.3 -> float
+            1e3 | 1.0e-3.111 -> power of 10
          */
         var value = ""
-        var firstDot = false
-        var firstE = false
-        var canBeNeg = true
-        var cenBePos = true
+        var hasDot = false
+        var hasPower = false
+        var powerHasDot = false
+        var powerHasSign = false
         while (!isEnd()) {
             when(val c = nextAndAdvance()) {
                 in X -> {
                     if (value == "0") {
-                        extractHexDigit()
-                        break
+                        return HexStart + extractHexDigit()
                     }
                     throw GrammarException(source, "$c should be used as hex number", pos)
                 }
                 Dot -> {
-                    if (firstDot) {
+                    if ((hasDot && !hasPower) || (hasPower && powerHasDot) || (value.last() !in Digit)) {
                         throw GrammarException(source, "not a valid number", pos)
                     }
-                    firstDot = true
+                    if (hasPower) {
+                        powerHasDot = true
+                    } else {
+                        hasDot = true
+                    }
                     value += c
                 }
                 in E -> {
-                    if (firstE) {
+                    if (hasPower || (value.last() !in Digit)) {
                         throw GrammarException(source, "not a valid number", pos)
                     }
-                    firstDot = true
+                    hasPower = true
                     value += c
+                }
+                in PosOrNegSign -> {
+                    if (!hasPower || powerHasSign || (value.last() !in E)) {
+                        throw  throw GrammarException(source, "not a valid number", pos)
+                    }
+                    powerHasSign = true
+                    value += c
+                }
+                in Digit -> {
+                    value += c
+                }
+                else -> {
+                    throw  throw GrammarException(source, "not a valid number", pos)
                 }
             }
         }
+        if (value.last() !in Digit) throw GrammarException(source, "not a valid number", pos)
+        return value
     }
 
-    private fun scanMinus() {
-        advance()
+    private fun addNumberToken(value: String) {
+        if (value.startsWith(HexStart)) {
+            addToken(Literal.HexLiteral, value)
+        } else if (E.any { value.contains(it) }) {
+            addToken(Literal.ExponentialLiteral, value)
+        } else if (value.contains(Dot)) {
+            addToken(Literal.FloatLiteral, value)
+        } else {
+            addToken(Literal.IntLiteral, value)
+        }
+    }
+
+    private fun scanNumber() {
+        val value = extractNumberNotStartWithSign()
+        addNumberToken(value)
+    }
+
+    private fun scanPosOrNegNumber() {
+        val sign = nextAndAdvance()
+
+        // ignore \s \n and other whitespace between sign and digit
+
         when(val c = next()) {
             in Digit -> {
-                scanNumber()
+                val value = sign + extractNumberNotStartWithSign()
+                addNumberToken(value)
             }
             else -> {
-                TODO("check whether there is other situations or not")
+                throw GrammarException(source, "not a valid number", pos)
             }
         }
     }
@@ -224,7 +269,7 @@ class Scanner {
         return c in Letter + Underscore + Digit + Dot
     }
 
-    private fun scanIdentifierOrKeyword() {
+    private fun scanIdentifierOrKeywordOrLiteral() {
         var value = ""
         while (!isEnd()) {
             val c = nextAndAdvance()
@@ -233,7 +278,9 @@ class Scanner {
             value += c
 
         }
-        if (value in KeywordTokenList) {
+        if (value in BoolLiteral) {
+            addToken(Literal.BooleanLiteral, value)
+        } else if (value in KeywordTokenList) {
             val type = KeyWordTokenMap[value]!!
             addToken(type, value)
         } else {
@@ -249,7 +296,7 @@ class Scanner {
                in WhiteSpace -> advance()
                NextLine -> nextLine()
                And -> TODO("& indicating pointer is supported by thrift, but there is no description in the document, deal wit it later")
-               Minus -> scanMinus()
+               in PosOrNegSign -> scanPosOrNegNumber()
                in SingleCharMarkTokenList -> { // contain minus, so must behind minus
                    addToken(SingleCharMarkTokenMap[c]!!, "$c")
                    advance()
@@ -257,8 +304,8 @@ class Scanner {
                in StringStart -> scanString()
                in Comment -> scanComment()
                in Digit -> scanNumber()
-               Underscore -> scanIdentifierOrKeyword()
-               in Letter -> scanIdentifierOrKeyword()
+               Underscore -> scanIdentifierOrKeywordOrLiteral()
+               in Letter -> scanIdentifierOrKeywordOrLiteral()
                else -> throw GrammarException(source, "unknown grammar", pos)
            }
        }
