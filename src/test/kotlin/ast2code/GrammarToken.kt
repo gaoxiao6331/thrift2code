@@ -128,4 +128,30 @@ val grammarToken = listOf<TokenData>(
     D(Literal.CommentLine, " 嵌套类型", L(P(0,0,0), P(0,0,0))),
 
     D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+
+    // union
+    D(Literal.CommentLine, " 定义联合体", L(P(0,0,0), P(0,0,0))),
+    D(Keyword.UnionKeyword, Keyword.UnionKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "ExampleUnion", L(P(0,0,0), P(0,0,0))),
+    D(Mark.LeftBraceToken, Mark.LeftBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+
+    D(Literal.IntLiteral, "1", L(P(0,0,0), P(0,0,0))),
+    D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.I32Keyword, Keyword.I32Keyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "intValue", L(P(0,0,0), P(0,0,0))),
+    D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+
+    D(Literal.IntLiteral, "2", L(P(0,0,0), P(0,0,0))),
+    D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.StringKeyword, Keyword.StringKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "stringValue", L(P(0,0,0), P(0,0,0))),
+    D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+
+    D(Literal.IntLiteral, "3", L(P(0,0,0), P(0,0,0))),
+    D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.BoolKeyword, Keyword.BoolKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "boolValue", L(P(0,0,0), P(0,0,0))),
+    D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+
+    D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
     )
