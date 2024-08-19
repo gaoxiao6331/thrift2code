@@ -100,7 +100,32 @@ val grammarToken = listOf<TokenData>(
     D(Other.Identifier, "gender", L(P(0,0,0), P(0,0,0))),
     D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
 
+    D(Literal.IntLiteral, "4", L(P(0,0,0), P(0,0,0))),
+    D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.OptionalKeyword, Keyword.OptionalKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Keyword.ListKeyword, Keyword.ListKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Mark.LessThanToken , Mark.LessThanToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.StringKeyword, Keyword.StringKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Mark.GreaterThanToken , Mark.GreaterThanToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "hobbies", L(P(0,0,0), P(0,0,0))),
+    D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
 
+    D(Literal.IntLiteral, "5", L(P(0,0,0), P(0,0,0))),
+    D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.MapKeyword, Keyword.MapKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Mark.LessThanToken , Mark.LessThanToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.StringKeyword, Keyword.StringKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Keyword.StringKeyword, Keyword.StringKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
+    D(Mark.GreaterThanToken , Mark.GreaterThanToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "attributes", L(P(0,0,0), P(0,0,0))),
+    D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+
+    D(Literal.IntLiteral, "6", L(P(0,0,0), P(0,0,0))),
+    D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "Container", L(P(0,0,0), P(0,0,0))),
+    D(Other.Identifier, "Container", L(P(0,0,0), P(0,0,0))),
+    D(Literal.CommentLine, " 嵌套类型", L(P(0,0,0), P(0,0,0))),
 
     D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
     )
