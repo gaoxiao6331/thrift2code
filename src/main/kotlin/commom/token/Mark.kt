@@ -2,7 +2,7 @@ package gaoxiao6331.commom.token
 
 enum class Mark(val markChar: Char) : Token {
     LeftParenthesisToken('('),
-    RightParenParenthesisToken(')'),
+    RightParenthesisToken(')'),
     LeftBraceToken('{'),
     RightBraceToken('}'),
     LeftBracketToken('['),
