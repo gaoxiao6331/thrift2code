@@ -1,4 +1,4 @@
-package gaoxiao6331.ast2code
+package gaoxiao6331.thrift2token
 
 import gaoxiao6331.commom.token.Token
 

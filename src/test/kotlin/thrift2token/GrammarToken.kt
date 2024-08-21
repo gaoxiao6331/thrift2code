@@ -1,9 +1,6 @@
-package ast2code
+package thrift2token
 
-import gaoxiao6331.ast2code.KeyWordTokenMap
-import gaoxiao6331.ast2code.Location
-import gaoxiao6331.ast2code.Position
-import gaoxiao6331.ast2code.TokenData
+import gaoxiao6331.thrift2token.TokenData
 import gaoxiao6331.commom.token.*
 
 val grammarToken = listOf<TokenData>(

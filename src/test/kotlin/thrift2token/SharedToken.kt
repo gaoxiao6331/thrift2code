@@ -1,6 +1,6 @@
-package ast2code
+package thrift2token
 
-import gaoxiao6331.ast2code.TokenData
+import gaoxiao6331.thrift2token.TokenData
 import gaoxiao6331.commom.token.Keyword
 import gaoxiao6331.commom.token.Literal
 import gaoxiao6331.commom.token.Mark
