@@ -6,10 +6,6 @@ import gaoxiao6331.ast2code.Position
 import gaoxiao6331.ast2code.TokenData
 import gaoxiao6331.commom.token.*
 
-typealias D = TokenData
-typealias P = Position
-typealias L = Location
-
 val grammarToken = listOf<TokenData>(
     // namespace
     D(Literal.CommentLine, " 定义命名空间", L(P(0,0,0), P(0,0,0))),
@@ -242,6 +238,7 @@ val grammarToken = listOf<TokenData>(
     D(Mark.RightParenthesisToken, Mark.RightParenthesisToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
     D(Mark.CommaToken, Mark.CommaToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
     D(Literal.CommentLine, " 返回布尔值的方法", L(P(0,0,0), P(0,0,0))),
+    D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
 
     D(Literal.CommentLine, " 定义类型别名", L(P(0,0,0), P(0,0,0))),
     D(Keyword.TypedefKeyword, Keyword.TypedefKeyword.keywordName, L(P(0,0,0), P(0,0,0))),
@@ -383,8 +380,5 @@ val grammarToken = listOf<TokenData>(
     D(Mark.ColonToken , Mark.ColonToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
     D(Other.Identifier, "ExampleUnion", L(P(0,0,0), P(0,0,0))),
     D(Other.Identifier, "aUnion", L(P(0,0,0), P(0,0,0))),
-    D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
-
-
-    D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0))),
-    )
+    D(Mark.RightBraceToken, Mark.RightBraceToken.markChar.toString(), L(P(0,0,0), P(0,0,0)))
+)
