@@ -1,8 +1,10 @@
 package gaoxiao6331.thrift2token
 
-import gaoxiao6331.commom.error.GrammarException
+import gaoxiao6331.commom.exception.GrammarException
 import gaoxiao6331.commom.exception.InternalException
 import gaoxiao6331.commom.token.*
+import gaoxiao6331.commom.Position
+import gaoxiao6331.commom.Location
 
 class Scanner {
 
