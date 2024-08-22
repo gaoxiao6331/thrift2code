@@ -1,13 +1,13 @@
 package thrift2token
 
 import kotlin.test.Test
-import org.junit.jupiter.api.Assertions.*
+import kotlin.test.asserter
 
 class ScannerTest {
 
     @Test
     fun testSharedToken() {
-        assertEquals(2, 1 + 1)
-        assertEquals(3, 1 + 1)
+        asserter.assertSame("test", 1,1)
+        asserter.assertSame("test", 1,2)
     }
 }
